@@ -15,25 +15,20 @@ import unittest.mock
 def lru_cache(func=None, maxsize=None):
     def decorator(func):
         cache = dict()
-        order = list()
 
         def wrapper(*args, **kwargs):
             key = (args, frozenset(kwargs.items()))
-
             # Если ключ уже есть в кэше, перемещаем его в конец списка order
             if key in cache:
-                order.remove(key)
-                order.append(key)
                 return cache[key]
             
             # Вычисляем результат и добавляем его в кэш
             result = func(*args, **kwargs)
             cache[key] = result
-            order.append(key)
 
             # Если cache переполнен, то удаляем самый старый элемент 
             if maxsize is not None and len(cache) > maxsize:
-                old_key = order.pop(0)
+                old_key = list(cache.keys())[0]
                 del cache[old_key]
 
             return result
@@ -86,3 +81,5 @@ if __name__ == '__main__':
 
 
 
+
+n = 5
