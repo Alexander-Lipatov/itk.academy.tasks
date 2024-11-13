@@ -10,6 +10,7 @@ class MyMeta(type):
     
 
 class A(metaclass=MyMeta):
-    pass
+
+    create_at : datetime.datetime
 
 print(A().create_at)

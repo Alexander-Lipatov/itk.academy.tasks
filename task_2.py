@@ -11,7 +11,9 @@
 # задания можно использовать глобальную переменную или контекстный менеджер.
 
 
-def access_control(roles:list=None):
+from typing import Optional
+
+def access_control(roles:Optional[list]):
     def decorator(func):
         def wrapper(*args, **kwargs):
             if user_role in roles:
@@ -22,21 +24,17 @@ def access_control(roles:list=None):
     return decorator
 
 
-user_role = 'admin'
 
 @access_control(roles=['admin', 'moderator'])
 def func():
     pass
 
+
+user_role = 'admin'
 func()
 
 
 user_role = 'user'
-
-@access_control(roles=['admin', 'moderator'])
-def func():
-    pass
-
 func() 
 
 

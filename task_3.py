@@ -11,7 +11,7 @@ from module import singleton_instance
 # Способ 1: с помощью метаклассов
 
 class SingletonMETA(type):
-    _instance = {}
+    _instance:dict = {}
 
     def __call__(cls, *args, **kwds):
         if cls not in cls._instance:
@@ -29,7 +29,7 @@ class A(metaclass=SingletonMETA):
 
 class SingletonNEW:
 
-    _instance = None
+    _instance:"SingletonNEW"
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
