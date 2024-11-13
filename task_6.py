@@ -88,7 +88,6 @@ def variant_c(data: list[int]):
         numbers = data[i:size_queue+i]
         input_queue.put(numbers)
         i += size_queue
-        print(i)
 
     # Отправляем сигнал завершения для каждого процесса
     for _ in processes:
@@ -98,7 +97,7 @@ def variant_c(data: list[int]):
     results = []
     while any(p.is_alive() for p in processes) or not output_queue.empty():
         try:
-            results.extend(output_queue.get())
+            results.extend(output_queue.get(timeout=0))
         except Empty:
             continue
 
