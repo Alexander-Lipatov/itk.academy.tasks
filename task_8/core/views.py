@@ -24,17 +24,6 @@ class BookViewSet(ModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('title', 'author__first_name', 'author__last_name')
 
-
-
-    def list(self, request):
-        return super().list(request)
-
-    def retrieve(self, request, pk=None, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-    
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
-
     @action(url_path='buy', detail=True, methods=['post'])
     def buy_book(self, request, pk=None):
         count = request.data.get('count', 0)
@@ -50,11 +39,3 @@ class BookViewSet(ModelViewSet):
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
-
-    @method_decorator(cache_page(60 * 15))
-    def list(self, request):
-        return super().list(request)
-
-    @method_decorator(cache_page(60 * 15))
-    def retrieve(self, request, pk=None):
-        return super().list(request)
