@@ -25,11 +25,10 @@ class BookViewSet(ModelViewSet):
     search_fields = ('title', 'author__first_name', 'author__last_name')
 
 
-    @method_decorator(cache_page(60 * 15))
+
     def list(self, request):
         return super().list(request)
 
-    @method_decorator(cache_page(60 * 15))
     def retrieve(self, request, pk=None, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
     
