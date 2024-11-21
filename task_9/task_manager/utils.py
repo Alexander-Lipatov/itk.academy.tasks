@@ -64,3 +64,10 @@ def my_func(task: Task):
     print("worker_id задачи: " + str(task.worker_id))
     time.sleep(1)
 
+
+@worker(worker_id=2)
+def my_func2(task: Task):
+    print(f"Worker запущен...")
+    print("Текущая задача: " + task.task_name)
+    print("worker_id задачи: " + str(task.worker_id))
+    time.sleep(1)
