@@ -7,8 +7,6 @@ from redis import Redis
 redis_client = Redis('redis-18750.c92.us-east-1-3.ec2.redns.redis-cloud.com', 18750, password='ZhGSoO5yah5xlifyAP5QgN8qYylhxmi2')
 
 
-
-
 def single(max_processing_time:timedelta):
     def decorator(func):
         def wrap(*args, **kwargs):
@@ -35,6 +33,7 @@ def single(max_processing_time:timedelta):
                     raise Exception("Another instance is processing the function.")
         return wrap
     return decorator
+
 
 @single(max_processing_time=timedelta(seconds=15))
 def process_transaction():
