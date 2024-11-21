@@ -15,15 +15,8 @@ def single(max_processing_time:timedelta):
             lock_timeout = max_processing_time.total_seconds()
 
             if redis_client.set(lock_key, lock_id, nx=True, ex=int(lock_timeout)):
-                try:
-                    func(*args, **kwargs)
-                finally:
-                    if redis_client.get(lock_key) == lock_key:
-                        redis_client.delete(lock_key)
-            else:
-                cur_lock_id = redis_client.get(lock_key)
-                if cur_lock_id and redis_client.ttl(lock_key)>0:
-                    raise Exception("Another instance is processing the function.")
+                func(*args, **kwargs)
+                
         return wrap
     return decorator
 
