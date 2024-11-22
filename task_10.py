@@ -1,7 +1,7 @@
 import time
 import uuid
 from datetime import timedelta
-from redis import Redis
+from redis import Redis, exceptions
 
 
 redis_client = Redis('redis-18750.c92.us-east-1-3.ec2.redns.redis-cloud.com',
@@ -14,11 +14,16 @@ def single(max_processing_time: timedelta):
             lock_key = f"lock:{func.__name__}"
             lock_id = str(uuid.uuid4())
             lock_timeout = max_processing_time.total_seconds()
-
-            if redis_client.set(lock_key, lock_id, nx=True, ex=int(lock_timeout)):
-
-                func(*args, **kwargs)
-                redis_client.delete(lock_key)
+            try:
+                if redis_client.set(lock_key, lock_id, nx=True, ex=int(lock_timeout)):
+                    try:
+                        func(*args, **kwargs)
+                    finally:
+                        redis_client.delete(lock_key)
+                else:
+                    raise exceptions.LockError('Функция запущена')
+            except exceptions.LockError as e:
+                print(e)
 
         return wrap
     return decorator
