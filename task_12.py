@@ -3,7 +3,7 @@ import time
 from datetime import timedelta
 
 from redis import Redis
-import uuid
+
 
 class RateLimitExceed(Exception):
     pass
