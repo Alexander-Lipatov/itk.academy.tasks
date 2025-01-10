@@ -3,6 +3,9 @@ import asyncio
 
 import aiohttp
 
+from unittest.mock import Mock
+
+
 
 urls = [
     "https://example.com",
@@ -28,12 +31,17 @@ async def fetch_urls(urls: list[str], file_path: str):
 
         with open(file_path, 'w') as f:
             f.write(json.dumps(data))
+        return data
         
 
 async def fetch_with_semaphore(session: aiohttp.ClientSession, url: str, semaphore: asyncio.Semaphore) -> dict:
     async with semaphore:
         return await fetch(session, url)
+    
+
 
 
 if __name__ == '__main__':
-    asyncio.run(fetch_urls(urls, './results.json'))
+    mock = Mock(return_value=[{"https://example.com": 200}, {"https://httpbin.org/status/404": 404}, {"https://nonexistent.url": 0}])
+    
+    assert asyncio.run(fetch_urls(urls, './results.json')) == mock
