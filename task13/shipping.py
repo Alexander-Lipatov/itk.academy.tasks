@@ -11,7 +11,9 @@ KAFKA_TOPICS = {
 config = {
     'bootstrap.servers': 'localhost:64250',
     'group.id':          'shipping_service',
-    'auto.offset.reset': 'earliest'
+    'auto.offset.reset': 'earliest',
+    'enable.auto.commit': False
+
 }
 
 
@@ -38,9 +40,13 @@ if __name__ == '__main__':
             elif msg.error():
                 print("ERROR: %s".format(msg.error()))
                 continue
+            try:
+                order = json.loads(msg.value().decode('utf-8'))
+                process_shipping(order)
+                consumer.commit()
 
-            order = json.loads(msg.value().decode('utf-8'))
-            process_shipping(order)
+            except Exception as e:
+                print(e)
 
     except KeyboardInterrupt:
         pass

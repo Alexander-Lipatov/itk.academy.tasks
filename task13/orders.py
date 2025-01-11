@@ -15,6 +15,7 @@ config = {
 
 producer = Producer(config)
 
+
 def create_order():
     order = {
         'order_id': str(uuid.uuid4()),
@@ -22,5 +23,6 @@ def create_order():
     }
     producer.produce(KAFKA_TOPICS['new_orders'], value=json.dumps(order))
     producer.flush()
+
 
 create_order()

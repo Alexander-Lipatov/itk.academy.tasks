@@ -11,18 +11,18 @@ KAFKA_TOPICS = {
 config = {
     'bootstrap.servers': 'localhost:64250',
     'group.id':          'notifications_service',
-    'auto.offset.reset': 'earliest'
+    'auto.offset.reset': 'earliest',
+    'enable.auto.commit': False
+
 }
 
 producer = Producer(config)
 consumer = Consumer(config)
 
 
-def process_shipping(order):
-    order['status'] = 'shipping'
-    producer.produce(
-        topic=KAFKA_TOPICS['sent_orders'], value=json.dumps(order))
-    producer.flush()
+def process_notification(order):
+    order['status'] = 'complete'
+    print(f'Order {order['order_id']} complete')
 
 
 if __name__ == '__main__':
@@ -37,10 +37,13 @@ if __name__ == '__main__':
             elif msg.error():
                 print("ERROR: %s".format(msg.error()))
                 continue
+            try:
 
-            order = json.loads(msg.value().decode('utf-8'))
-            order['status'] = 'complete'
-            print('Order complete')
+                order = json.loads(msg.value().decode('utf-8'))
+                process_notification(order)
+                consumer.commit()
+            except Exception as e:
+                print(e)
 
     except KeyboardInterrupt:
         pass
